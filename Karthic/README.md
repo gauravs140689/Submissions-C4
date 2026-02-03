@@ -1,1 +1,1 @@
-https://543d8219c8617938be.gradio.live/paste ur assignments here
+https://543d8219c8617938be.gradio.live
