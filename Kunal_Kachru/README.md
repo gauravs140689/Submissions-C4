@@ -26,3 +26,12 @@ chatbot-app/
 3. streamlit run app.py
 ```
 ---
+
+## Day 6 and 7 class activity/assignment 
+```
+1. Google Drive URL - https://drive.google.com/drive/folders/1Y3FJBC39BtXbP23MfdYA0E68XqBjLB5A?usp=sharing
+2. Videos showing basic and advanced rag using Gradio UI are also present at the above location.
+3. All other assignments related to simple/advanced/multi- modal RAG are also present
+
+```
+---
