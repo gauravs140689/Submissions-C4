@@ -1,0 +1,10 @@
+langchain
+langchain-community
+faiss-cpu
+sentence-transformers
+duckduckgo-search
+beautifulsoup4
+requests
+python-dotenv
+ollama
+tqdm
