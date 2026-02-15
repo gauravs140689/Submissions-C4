@@ -1,0 +1,301 @@
+{
+  "name": "Gmail automation - Nikita",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9482e2f9-5dd2-4645-a9c0-ce161755d8b1",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LhuGx2LLYbpsz25v",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}\n{{ $json.Subject }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "AI Generated email",
+              "description": "if the email received is from n8n or "
+            },
+            {
+              "category": "Customer email",
+              "description": "if the email contains issues or errors logged in"
+            },
+            {
+              "category": "newsletter",
+              "description": "If this is email newsletter but not from Outskill"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "513cb821-b9e6-4a4d-9595-631f49a21421",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        144,
+        128
+      ],
+      "id": "e84b90b4-06bd-4d20-a57f-bedf5a58cb32",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "x25IjyerHnOtEbkx",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        112
+      ],
+      "id": "ca90b9dc-5192-4520-a1dd-30c8640d679f",
+      "name": "Delete a message",
+      "webhookId": "c36ff969-0c4b-4d8d-a32a-a82131c3e6cc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LhuGx2LLYbpsz25v",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_2881948008631049112"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "8c46ede0-72de-4d39-aa70-882e8ba4bc53",
+      "name": "Add label to message",
+      "webhookId": "b0dcefe3-245d-4169-b220-2f6d1152e223",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LhuGx2LLYbpsz25v",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        208
+      ],
+      "id": "3ecfc124-3ad5-4eb5-8d5d-a72b93cb6150",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "9999r2SkV17Oq8In",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        0
+      ],
+      "id": "7cd5d89e-2b88-460e-9f60-f295b638836e",
+      "name": "Create a draft",
+      "webhookId": "9f3a7d95-0b42-49bd-b2b1-ce3e68353fbf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LhuGx2LLYbpsz25v",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User email-{{ $('Gmail Trigger').item.json.From }}\nUser Subject- {{ $('Gmail Trigger').item.json.Subject }}",
+        "options": {
+          "systemMessage": "You are a service desk assistant to reply to customer query.\nBe polite and precise.\nUse links from internet to address query.\n\n\nIf you are not sure reply I'll inform a real human to assist you. \n\nAlways mention this is AI generated email"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        768,
+        0
+      ],
+      "id": "49f2a0ba-d5d7-4e7c-80b2-273976ac9ad9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $('Gmail Trigger').item.json.Subject }}",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1088,
+        16
+      ],
+      "id": "d2211140-0c65-4586-8e14-aea6d7243766",
+      "name": "Create a draft1",
+      "webhookId": "50068745-2ea0-465b-8e60-a33d83c3ec0d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LhuGx2LLYbpsz25v",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Create a draft1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "02f221e5-a89e-4289-9c50-1b6e91e4dce7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c75269aad866bc037ceefe9316da8ad01438fa6691eed46c41d8752cfb321802"
+  },
+  "id": "jxgdsKnH9-nCzLRmmbkZZ",
+  "tags": []
+}

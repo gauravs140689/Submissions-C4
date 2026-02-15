@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Environment files
 .env
 .env.local
@@ -100,3 +101,7 @@ Thumbs.db
 
 # Node modules (if frontend)
 node_modules/
+=======
+# Created by venv; see https://docs.python.org/3/library/venv.html
+.venv/
+>>>>>>> f1c8ec03f09e80474e2546205286d890413e5a50
