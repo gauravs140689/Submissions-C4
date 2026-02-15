@@ -1,0 +1,221 @@
+@page "/data"
+@using FinSynth.Core.Models
+@using FinSynth.Web.Services
+@inject FinancialDataService FinancialData
+@inject NotificationService NotificationService
+
+<PageTitle>Financial Data - FinSynth</PageTitle>
+
+<RadzenStack Gap="1.5rem">
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenText TextStyle="TextStyle.H3">Manage Financial Data</RadzenText>
+            <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-text-secondary-color">
+                Add, edit, or remove income, expenses, and debt accounts
+            </RadzenText>
+        </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenTabs>
+        <Tabs>
+            <RadzenTabsItem Text="Income">
+                <RadzenCard class="rz-mt-3 rz-shadow-3">
+                    <RadzenStack Gap="1rem">
+                        <RadzenButton Text="Add Income" Icon="add" Click="@(() => ShowIncomeDialog(null))" ButtonStyle="ButtonStyle.Success" />
+                        
+                        <RadzenDataGrid Data="@(FinancialData.CurrentSnapshot?.Incomes ?? new List<Income>())" 
+                                       TItem="Income" 
+                                       AllowSorting="true">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="Income" Property="Source" Title="Source" />
+                                <RadzenDataGridColumn TItem="Income" Property="MonthlyAmount" Title="Monthly Amount" FormatString="{0:C}" />
+                                <RadzenDataGridColumn TItem="Income" Property="IsRecurring" Title="Recurring">
+                                    <Template Context="income">
+                                        @(income.IsRecurring ? "Yes" : "No")
+                                    </Template>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="Income" Title="Actions" Width="100px">
+                                    <Template Context="income">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" 
+                                                     Click="@(() => RemoveIncome(income))" />
+                                    </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="Expenses">
+                <RadzenCard class="rz-mt-3 rz-shadow-3">
+                    <RadzenStack Gap="1rem">
+                        <RadzenButton Text="Add Expense" Icon="add" Click="@(() => ShowExpenseDialog(null))" ButtonStyle="ButtonStyle.Success" />
+                        
+                        <RadzenDataGrid Data="@(FinancialData.CurrentSnapshot?.Expenses ?? new List<Expense>())" 
+                                       TItem="Expense" 
+                                       AllowSorting="true">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="Expense" Property="Category" Title="Category" />
+                                <RadzenDataGridColumn TItem="Expense" Property="MonthlyAmount" Title="Monthly Amount" FormatString="{0:C}" />
+                                <RadzenDataGridColumn TItem="Expense" Property="IsEssential" Title="Essential">
+                                    <Template Context="expense">
+                                        @(expense.IsEssential ? "Yes" : "No")
+                                    </Template>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="Expense" Title="Actions" Width="100px">
+                                    <Template Context="expense">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" 
+                                                     Click="@(() => RemoveExpense(expense))" />
+                                    </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="Debts">
+                <RadzenCard class="rz-mt-3 rz-shadow-3">
+                    <RadzenStack Gap="1rem">
+                        <RadzenButton Text="Add Debt" Icon="add" Click="@(() => ShowDebtDialog(null))" ButtonStyle="ButtonStyle.Success" />
+                        
+                        <RadzenDataGrid Data="@(FinancialData.CurrentSnapshot?.Debts ?? new List<DebtAccount>())" 
+                                       TItem="DebtAccount" 
+                                       AllowSorting="true">
+                            <Columns>
+                                <RadzenDataGridColumn TItem="DebtAccount" Property="AccountName" Title="Account" />
+                                <RadzenDataGridColumn TItem="DebtAccount" Property="Balance" Title="Balance" FormatString="{0:C}" />
+                                <RadzenDataGridColumn TItem="DebtAccount" Property="InterestRate" Title="APR" FormatString="{0:0.00}%" />
+                                <RadzenDataGridColumn TItem="DebtAccount" Property="MinimumPayment" Title="Min Payment" FormatString="{0:C}" />
+                                <RadzenDataGridColumn TItem="DebtAccount" Property="AccountType" Title="Type" />
+                                <RadzenDataGridColumn TItem="DebtAccount" Title="Actions" Width="100px">
+                                    <Template Context="debt">
+                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" 
+                                                     Click="@(() => RemoveDebt(debt))" />
+                                    </Template>
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenTabsItem>
+
+            <RadzenTabsItem Text="Savings">
+                <RadzenCard class="rz-mt-3 rz-shadow-3">
+                    <RadzenStack Gap="1rem">
+                        <RadzenFormField Text="Current Savings Balance">
+                            <RadzenNumeric @bind-Value="savingsBalance" ShowUpDown="false" Format="c" />
+                        </RadzenFormField>
+                        
+                        <RadzenFormField Text="Emergency Fund Goal">
+                            <RadzenNumeric @bind-Value="emergencyFundGoal" ShowUpDown="false" Format="c" />
+                        </RadzenFormField>
+
+                        <RadzenButton Text="Save Savings Info" Icon="save" Click="@UpdateSavings" ButtonStyle="ButtonStyle.Primary" />
+                    </RadzenStack>
+                </RadzenCard>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenStack>
+
+@code {
+    private decimal savingsBalance;
+    private decimal emergencyFundGoal;
+
+    protected override void OnInitialized()
+    {
+        if (FinancialData.CurrentSnapshot == null)
+        {
+            FinancialData.UpdateSnapshot(new FinancialSnapshot(
+                new List<Income>(),
+                new List<Expense>(),
+                new List<DebtAccount>(),
+                0m,
+                0m
+            ));
+        }
+        else
+        {
+            savingsBalance = FinancialData.CurrentSnapshot.SavingsBalance;
+            emergencyFundGoal = FinancialData.CurrentSnapshot.EmergencyFundGoal;
+        }
+
+        FinancialData.OnSnapshotChanged += StateHasChanged;
+    }
+
+    private void ShowIncomeDialog(Income? income)
+    {
+        // In a full implementation, this would open a dialog
+        // For simplicity, we'll just add a default income
+        FinancialData.AddIncome(new Income("New Income", 0m, true));
+        NotificationService.Notify(new NotificationMessage
+        {
+            Severity = NotificationSeverity.Info,
+            Summary = "Income Added",
+            Detail = "Please edit the values in the grid",
+            Duration = 3000
+        });
+    }
+
+    private void ShowExpenseDialog(Expense? expense)
+    {
+        FinancialData.AddExpense(new Expense("New Expense", 0m, true));
+        NotificationService.Notify(new NotificationMessage
+        {
+            Severity = NotificationSeverity.Info,
+            Summary = "Expense Added",
+            Detail = "Please edit the values in the grid",
+            Duration = 3000
+        });
+    }
+
+    private void ShowDebtDialog(DebtAccount? debt)
+    {
+        FinancialData.AddDebt(new DebtAccount("New Debt", 0m, 0m, 0m, "Debt"));
+        NotificationService.Notify(new NotificationMessage
+        {
+            Severity = NotificationSeverity.Info,
+            Summary = "Debt Added",
+            Detail = "Please edit the values in the grid",
+            Duration = 3000
+        });
+    }
+
+    private void RemoveIncome(Income income)
+    {
+        if (FinancialData.CurrentSnapshot == null) return;
+        var index = FinancialData.CurrentSnapshot.Incomes.IndexOf(income);
+        if (index >= 0) FinancialData.RemoveIncome(index);
+    }
+
+    private void RemoveExpense(Expense expense)
+    {
+        if (FinancialData.CurrentSnapshot == null) return;
+        var index = FinancialData.CurrentSnapshot.Expenses.IndexOf(expense);
+        if (index >= 0) FinancialData.RemoveExpense(index);
+    }
+
+    private void RemoveDebt(DebtAccount debt)
+    {
+        if (FinancialData.CurrentSnapshot == null) return;
+        var index = FinancialData.CurrentSnapshot.Debts.IndexOf(debt);
+        if (index >= 0) FinancialData.RemoveDebt(index);
+    }
+
+    private void UpdateSavings()
+    {
+        FinancialData.UpdateSavings(savingsBalance, emergencyFundGoal);
+        NotificationService.Notify(new NotificationMessage
+        {
+            Severity = NotificationSeverity.Success,
+            Summary = "Savings Updated",
+            Duration = 3000
+        });
+    }
+
+    public void Dispose()
+    {
+        FinancialData.OnSnapshotChanged -= StateHasChanged;
+    }
+}

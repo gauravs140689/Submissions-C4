@@ -1,0 +1,66 @@
+@page "/upload"
+@using FinSynth.Web.Services
+@inject DocumentParserService DocumentParser
+@inject FinancialDataService FinancialData
+@inject NotificationService NotificationService
+
+<PageTitle>Upload Documents - FinSynth</PageTitle>
+
+<RadzenStack Gap="1.5rem">
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenText TextStyle="TextStyle.H3">Upload Financial Documents</RadzenText>
+            <RadzenText TextStyle="TextStyle.Subtitle1" class="rz-text-secondary-color">
+                CSV and Excel file upload coming soon. Use "Financial Data" page to enter data manually.
+            </RadzenText>
+        </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenRow>
+        <RadzenColumn Size="12">
+            <RadzenCard class="rz-shadow-3">
+                <RadzenStack Gap="1.5rem">
+                    <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat">
+                        <RadzenText TextStyle="TextStyle.H6">File Upload Temporarily Disabled</RadzenText>
+                        <RadzenText>Document parsing is being optimized. Please use the <RadzenLink Path="/data">Financial Data</RadzenLink> page to enter your information, or click "Load Sample Data" on the <RadzenLink Path="/">Dashboard</RadzenLink> to see the app in action.</RadzenText>
+                    </RadzenAlert>
+
+                    <RadzenText TextStyle="TextStyle.H6">Supported Formats (Coming Soon)</RadzenText>
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap">
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="Excel (.xlsx, .xls)" />
+                        <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Text="CSV" />
+                    </RadzenStack>
+
+                    <RadzenText TextStyle="TextStyle.H6">Expected Format</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2">Excel/CSV files should have these columns:</RadzenText>
+                    <RadzenDataGrid Data="@exampleData" TItem="ExampleRow">
+                        <Columns>
+                            <RadzenDataGridColumn TItem="ExampleRow" Property="Type" Title="Type" />
+                            <RadzenDataGridColumn TItem="ExampleRow" Property="Description" Title="Description" />
+                            <RadzenDataGridColumn TItem="ExampleRow" Property="Amount" Title="Amount" />
+                            <RadzenDataGridColumn TItem="ExampleRow" Property="Extra" Title="Extra (APR% or Essential)" />
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenColumn>
+    </RadzenRow>
+</RadzenStack>
+
+@code {
+    private class ExampleRow
+    {
+        public string Type { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Amount { get; set; } = "";
+        public string Extra { get; set; } = "";
+    }
+
+    private List<ExampleRow> exampleData = new()
+    {
+        new() { Type = "Income", Description = "Salary", Amount = "$5,500", Extra = "" },
+        new() { Type = "Expense", Description = "Rent", Amount = "$1,500", Extra = "Essential" },
+        new() { Type = "Expense", Description = "Entertainment", Amount = "$300", Extra = "Discretionary" },
+        new() { Type = "Debt", Description = "Credit Card", Amount = "$8,500", Extra = "18.99%" }
+    };
+}
