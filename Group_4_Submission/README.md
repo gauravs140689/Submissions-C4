@@ -1,3 +1,8 @@
+# Here is the folder for the video(s)
+# Video 1 of 2 is of 4.5 mins giving a complete demo of our application
+# Video 2 of 2 is of 1 min giving a view of what improvements we made for efficiency and standards
+https://drive.google.com/drive/folders/12Dy8x9CN_1V0ANQtOmWTgQjhHbqnhc23?usp=sharing
+
 # 🕵️‍♂️ Agentic Research Engine (Group 4)
 
 A powerful, autonomous deep research system powered by **AI Agents**. This engine can perform comprehensive web research, verify facts, detect contradictions, and synthesize findings into a cited report—all through a user-friendly Streamlit interface.
