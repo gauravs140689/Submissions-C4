@@ -8,8 +8,8 @@ An AI-powered system that ingests security logs, runs an autonomous LangGraph ag
 ### 🔗 Key Submission Links
 
 - 🎥 **Demo Video**: [Link to your demo video here]
-- 📊 **Presentation Deck**: [Link to your slides here]
-- 💻 **Source Code**: [https://github.com/b0rgbart3/group13](https://github.com/b0rgbart3/group13)
+- 📊 **Presentation Deck**: [https://app.chroniclehq.com/d578f860-76ec-4ca8-b701-655ddd089892/document/fe1894e5-74d5-4cd1-8d21-73a04ea74419/intro](AI Agentic Security Log Monitor)
+- 💻 **Source Code**: [https://github.com/b0rgbart3/group13](group13)
 
 ### ❗ Problem
 
