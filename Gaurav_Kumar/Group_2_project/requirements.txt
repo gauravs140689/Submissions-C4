@@ -1,0 +1,39 @@
+# ============================================================
+# Multi-Agent AI Deep Researcher — Pinned Dependencies
+# Python 3.11+ required
+# Install with: pip install -r requirements.txt
+# ============================================================
+
+# --- Core AI Orchestration ---
+langgraph==1.0.8               # StateGraph agent orchestration
+langchain==1.2.10              # LLM abstractions + chain utilities
+langchain-openai==1.1.9        # OpenAI-compatible client (used for OpenRouter)
+langchain-community==0.4.1     # Community integrations
+langchain-core==1.2.12         # Core abstractions for LangGraph
+
+# --- LLM & Search APIs ---
+openai==2.21.0                 # OpenAI SDK v2 (OpenRouter is OpenAI-compatible)
+tavily-python==0.5.0           # Tavily web search SDK
+
+# --- UI ---
+streamlit==1.40.0              # Web UI framework
+
+# --- PDF Generation ---
+fpdf2==2.8.1                   # PDF creation (successor to fpdf)
+
+# --- Data Visualization ---
+plotly==5.24.1                 # Interactive charts
+
+# --- Data Validation ---
+pydantic==2.9.2                # Data models + validation
+
+# --- Vector Store (semantic caching) ---
+chromadb==0.5.18               # Embeddings + semantic cache
+
+# --- Utilities ---
+python-dotenv==1.0.1           # Load .env files
+requests==2.32.5               # HTTP client (fallback)
+tenacity==9.0.0                # Retry logic for API calls
+
+# --- Dev / Testing ---
+pytest==8.3.3                  # Unit tests
