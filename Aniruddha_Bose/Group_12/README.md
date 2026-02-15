@@ -319,7 +319,7 @@ python rag.py "What did the research say about SSRIs?"
 8. On approval, the report is saved as a timestamped `.docx` file in `reports/` and the LanceDB vector database is rebuilt to include the new content.
 9. The user can then type questions into the **Knowledge Base Query** panel to retrieve grounded answers from all previously approved research.
 
-## 🔗 Key Submission Links
+## Key Submission Links
 
 - 🎥 **Demo Video**: [Demo video](https://www.youtube.com/watch?v=pjt2qXS1NHk)
-- 💻 **Source Code**: [Group 13](https://github.com/eng-accelerator/Submissions-C4/tree/C4-Group12_Hackathon/Aniruddha_Bose/Group_12/Hackathon)
+- 💻 **Source Code**: [Group 12](https://github.com/eng-accelerator/Submissions-C4/tree/C4-Group12_Hackathon/Aniruddha_Bose/Group_12/Hackathon)
