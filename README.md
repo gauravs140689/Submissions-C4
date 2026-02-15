@@ -1,5 +1,5 @@
 # Submissions-C4
-Upload your Assignments here : [https://docs.google.com/document/d/13C-fnx1m6xJlJApvTO8JjPgzY_ztSXgAgSEkJ68Dn6w/edit?tab=t.0#heading=h.t5dkhq28d76b](project docs)
+Upload your Assignments here : [https://docs.google.com/document/d/13C-fnx1m6xJlJApvTO8JjPgzY_ztSXgAgSEkJ68Dn6w/edit?usp=sharing](Project List)
 
 ## Group 13 🚀 AI LangGraph Agentic Security Log Monitor
 
